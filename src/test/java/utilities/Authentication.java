@@ -5,7 +5,6 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONObject;
 
 import static hooks.api.HooksAPI.spec;
@@ -14,6 +13,7 @@ import static io.restassured.RestAssured.given;
 public class Authentication {
 
     private static RequestSpecification spec;
+
     public static String generateToken(){
 
         spec = new RequestSpecBuilder().setBaseUri(ConfigReader.getProperty("base_url")).build();
@@ -25,8 +25,6 @@ public class Authentication {
         reqBody.put("email", ConfigReader.getProperty("email"));
         reqBody.put("password", ConfigReader.getProperty("password"));
 
-
-
         Response response = given()
                 .spec(spec)
                 .contentType(ContentType.JSON)
@@ -35,7 +33,11 @@ public class Authentication {
                 .body(reqBody.toString())
                 .post("/{pp1}/{pp2}");
 
-        JsonPath resJP
+        JsonPath resJP = response.jsonPath();
+
+        String token=resJP.getString("token");
+
+        return token;
 
     }
 }
